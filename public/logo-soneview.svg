@@ -1,0 +1,9 @@
+<svg width="120" height="40" viewBox="0 0 120 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@700&display=swap');
+  </style>
+  <rect width="120" height="40" rx="8" fill="#212844"/>
+  <rect x="4" y="4" width="32" height="32" rx="6" fill="#f0e7d5"/>
+  <text x="20" y="24" font-family="Inter" font-weight="700" font-size="14" fill="#212844" text-anchor="middle" letter-spacing="-0.05em">SV</text>
+  <text x="50" y="24" font-family="Inter" font-weight="700" font-size="16" fill="#f0e7d5" letter-spacing="-0.02em">Soneview</text>
+</svg>

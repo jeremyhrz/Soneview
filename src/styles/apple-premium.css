@@ -1,0 +1,141 @@
+/* 
+ * Apple Premium CSS - Filtros y efectos de lujo extremo
+ * Para imágenes con calidad Apple
+ */
+
+/* Filtros premium para imágenes */
+.img-premium {
+  filter: brightness(1.02) contrast(1.05) saturate(1.1);
+  mix-blend-mode: multiply;
+  transition: all 0.7s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.img-premium:hover {
+  filter: brightness(1.05) contrast(1.08) saturate(1.15);
+  transform: scale(1.02);
+}
+
+/* Efecto anti-gravity para imágenes */
+@keyframes anti-gravity {
+  0%, 100% { 
+    transform: translateY(0px) scale(1); 
+  }
+  50% { 
+    transform: translateY(-8px) scale(1.02); 
+  }
+}
+
+.anti-gravity {
+  animation: anti-gravity 8s ease-in-out infinite;
+}
+
+/* Fondo sutil para imágenes con fondo */
+.img-backdrop {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(240,231,213,0.2) 0%, rgba(255,255,255,0.1) 100%);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  border-radius: 3rem;
+}
+
+/* Efecto de flotación sutil */
+.float-subtle {
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.01)) 
+          drop-shadow(0 8px 32px rgba(0,0,0,0.04));
+  transition: all 0.5s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.float-subtle:hover {
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.02)) 
+          drop-shadow(0 16px 48px rgba(0,0,0,0.06));
+}
+
+/* Tipografía Apple premium */
+.apple-typography {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Inter, sans-serif;
+  letter-spacing: -0.05em;
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+}
+
+.tracking-tighter {
+  letter-spacing: -0.05em;
+}
+
+.tracking-tightest {
+  letter-spacing: -0.08em;
+}
+
+/* Botones cápsula Apple */
+.btn-capsule {
+  padding: 10px 24px;
+  border-radius: 99px;
+  background: #212844;
+  color: #f0e7d5;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1px solid rgba(33,40,68,0.1);
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.btn-capsule:hover {
+  background: #1a1f36;
+  transform: scale(1.05);
+}
+
+/* Glassmorphism premium */
+.glass-premium {
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(33,40,68,0.05);
+}
+
+/* Bento Grid con esquinas redondeadas extremas */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 64px 48px;
+}
+
+.bento-item {
+  border-radius: 3rem;
+  overflow: hidden;
+}
+
+/* Animaciones suaves Apple */
+.transition-apple {
+  transition: all 0.3s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.transition-apple-slow {
+  transition: all 0.7s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+/* Efecto de hover sutil */
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+/* Gradientes sutiles */
+.gradient-subtle {
+  background: linear-gradient(135deg, rgba(240,231,213,0.1) 0%, rgba(255,255,255,0.05) 100%);
+}
+
+/* Sombras premium */
+.shadow-premium {
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.01), 
+              0 2px 4px rgba(0,0,0,0.01), 
+              0 8px 32px rgba(0,0,0,0.04);
+}
+
+.shadow-premium-lg {
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.01), 
+              0 4px 8px rgba(0,0,0,0.02), 
+              0 16px 48px rgba(0,0,0,0.06);
+}

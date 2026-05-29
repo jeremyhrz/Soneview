@@ -1,0 +1,188 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import './styles/apple-premium.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Base ─────────────────────────────────────────────── */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-white text-sv-blue font-sans antialiased;
+    font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'ss01' 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: rgba(41, 151, 255, 0.18);
+    color: #212844;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(33, 40, 68, 0.25);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(33, 40, 68, 0.45);
+  }
+}
+
+/* ─── Components ────────────────────────────────────────── */
+@layer components {
+
+  /* Glassmorphism card */
+  .glass {
+    background: rgba(255, 255, 255, 0.72);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.55);
+  }
+
+  /* Navbar glass (on sv-blue base) */
+  .navbar-glass {
+    background: rgba(33, 40, 68, 0.88);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  /* Primary CTA button */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2
+           bg-sv-accent text-white
+           px-7 py-3 rounded-full
+           text-sm font-semibold tracking-tight
+           transition-all duration-300
+           hover:bg-blue-500 hover:shadow-lg hover:shadow-sv-accent/30
+           active:scale-[0.97];
+  }
+
+  /* Ghost CTA link */
+  .btn-ghost {
+    @apply inline-flex items-center gap-1.5
+           text-sv-accent text-sm font-semibold
+           transition-all duration-200
+           hover:gap-2.5 hover:opacity-80;
+  }
+
+  /* Product card */
+  .product-card {
+    @apply bg-white rounded-5xl p-10
+           border border-black/[0.04]
+           shadow-card
+           transition-all duration-500 ease-spring
+           hover:shadow-card-lg hover:-translate-y-1.5;
+  }
+
+  /* Spec tile */
+  .spec-tile {
+    @apply bg-sv-light rounded-4xl p-8
+           border border-black/[0.04]
+           transition-shadow duration-300
+           hover:shadow-apple;
+  }
+
+  /* Category pill */
+  .cat-pill {
+    @apply flex flex-col items-center gap-2 px-5 py-4
+           rounded-2xl text-xs font-semibold tracking-wide
+           transition-all duration-200 cursor-pointer
+           border border-transparent
+           select-none;
+  }
+
+  .cat-pill.active {
+    @apply bg-sv-blue text-sv-cream border-sv-blue shadow-sm;
+  }
+
+  .cat-pill:not(.active) {
+    @apply text-sv-blue/60 hover:text-sv-blue hover:bg-sv-blue/5;
+  }
+
+  /* Form input */
+  .form-input {
+    @apply w-full px-4 py-3 rounded-xl
+           bg-gray-50 border border-gray-200
+           text-sv-blue text-sm font-medium
+           placeholder:text-gray-400
+           focus:outline-none focus:ring-2 focus:ring-sv-accent/25 focus:border-sv-accent/40
+           transition-all duration-200;
+  }
+
+  /* Admin table row */
+  .admin-row {
+    @apply border-b border-gray-50 hover:bg-sv-cream/30 transition-colors duration-150;
+  }
+
+  /* Badge chip */
+  .badge {
+    @apply inline-block text-[10px] font-bold uppercase tracking-widest
+           px-3 py-1 rounded-full;
+  }
+
+  .badge-gold {
+    @apply badge bg-amber-50 text-amber-600;
+  }
+
+  .badge-blue {
+    @apply badge bg-blue-50 text-blue-600;
+  }
+
+  .badge-green {
+    @apply badge bg-emerald-50 text-emerald-600;
+  }
+}
+
+/* ─── Utilities ─────────────────────────────────────────── */
+@layer utilities {
+  .text-balance { text-wrap: balance; }
+
+  .gradient-cream {
+    background: linear-gradient(160deg, #f0e7d5 0%, #fcfaf7 60%, #fff 100%);
+  }
+
+  .gradient-blue {
+    background: linear-gradient(135deg, #212844 0%, #2d3a6e 100%);
+  }
+
+  /* Shimmer effect for skeleton loaders */
+  .shimmer {
+    background: linear-gradient(90deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.55) 50%,
+      rgba(255,255,255,0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  /* Hero text gradient overlay */
+  .hero-fade-bottom {
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  }
+
+  /* Noise texture overlay */
+  .noise::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: inherit;
+  }
+}
