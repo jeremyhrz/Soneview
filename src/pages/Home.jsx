@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+// Micro-animaciones nativas sin framer-motion pesada
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { heroSlides } from '../data/mockData';
 import { useProducts } from '../context/ProductContext';
@@ -18,17 +18,43 @@ import Footer from '../components/Footer';
  * • export default garantizado
  */
 
+/* ─── NATIVE SCROLL REVEAL HOOK ────────────────────── */
+function useScrollReveal() {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = React.useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return [ref, isVisible];
+}
+
 /* ─── FEATURED CARD ────────────────────────────────── */
 function FeaturedCard({ product, featured = false, delay = 0 }) {
+  const [ref, isVisible] = useScrollReveal();
+
   if (!product) return null;
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
-      className={`group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-[#f5f5f7] transition-all duration-700 ease-in-out hover:-translate-y-2 hover:shadow-[0_24px_48px_rgba(0,0,0,0.06)] hover:bg-white cursor-pointer ${featured ? 'md:col-span-2' : ''}`}
-      style={{ gridColumn: featured ? 'span 2' : undefined }}
+    <div
+      ref={ref}
+      className={`group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-[#f5f5f7] cursor-pointer ${featured ? 'md:col-span-2' : ''} transform transition-all hover:bg-white hover:-translate-y-2 hover:shadow-[0_24px_48px_rgba(0,0,0,0.06)] ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
+      style={{ 
+        gridColumn: featured ? 'span 2' : undefined,
+        transitionDuration: '800ms',
+        transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        transitionDelay: isVisible ? `${delay * 1000}ms` : '0ms'
+      }}
     >
       {/* Contenedor Imagen (Efecto Zoom Sutil) */}
       <div className={`relative flex items-center justify-center p-8 mix-blend-multiply ${featured ? 'aspect-[16/9]' : 'aspect-[4/3]'}`}>
@@ -59,22 +85,26 @@ function FeaturedCard({ product, featured = false, delay = 0 }) {
           </Link>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
 
 /* ─── REVEAL WRAPPER ───────────────────────────────── */
-function Reveal({ children, delay = 0, style }) {
+function Reveal({ children, delay = 0, style, className = '' }) {
+  const [ref, isVisible] = useScrollReveal();
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.72, delay, ease: [0.16, 1, 0.3, 1] }}
-      style={style}
+    <div
+      ref={ref}
+      style={{
+        ...style,
+        transitionDuration: '800ms',
+        transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        transitionDelay: isVisible ? `${delay * 1000}ms` : '0ms'
+      }}
+      className={`transform transition-all ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'} ${className}`}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }
 
@@ -132,7 +162,7 @@ export default function Home() {
 
       {/* ── CATEGORY SECTIONS ───────────────────────── */}
       {sections.map((sec) => {
-        if (!sec.items || sec.items.length === 0) return null;
+        const hasItems = sec.items && sec.items.length > 0;
         return (
           <section key={sec.cat} style={{ padding: '120px 48px', background: sec.bg }}>
             <div style={{ maxWidth: 1400, margin: '0 auto' }}>
@@ -143,14 +173,31 @@ export default function Home() {
                     <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 800, letterSpacing: '-0.035em', color: '#1d1d1f', lineHeight: 1.05, marginBottom: 12 }}>{sec.title}</h2>
                     <p style={{ fontSize: 16, fontWeight: 500, color: '#86868b', maxWidth: 380 }}>{sec.body}</p>
                   </div>
-                  <Link to={`/catalog?cat=${sec.cat}`} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 14, fontWeight: 600, color: '#0071e3', textDecoration: 'none' }} className="hover:opacity-80 transition-opacity">
-                    Ver todos <span style={{ fontSize: 16 }}>→</span>
-                  </Link>
+                  {hasItems && (
+                    <Link to={`/catalog?cat=${sec.cat}`} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 14, fontWeight: 600, color: '#0071e3', textDecoration: 'none' }} className="hover:opacity-80 transition-opacity">
+                      Ver todos <span style={{ fontSize: 16 }}>→</span>
+                    </Link>
+                  )}
                 </div>
               </Reveal>
-              <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fill, minmax(320px, 1fr))`, gap: 32 }}>
-                {sec.items.map((p, i) => <FeaturedCard key={p.id} product={p} delay={i * 0.08} />)}
-              </div>
+              
+              {hasItems ? (
+                <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fill, minmax(320px, 1fr))`, gap: 32 }}>
+                  {sec.items.map((p, i) => <FeaturedCard key={p.id} product={p} delay={i * 0.08} />)}
+                </div>
+              ) : (
+                <Reveal delay={0.2}>
+                  <div className="w-full rounded-[2.5rem] bg-gradient-to-b from-[#f5f5f7] to-white border border-black/[0.02] flex flex-col items-center justify-center text-center p-16 md:p-24 min-h-[400px] shadow-[inset_0_2px_20px_rgba(0,0,0,0.02)]">
+                    <h3 className="text-2xl md:text-4xl font-bold tracking-tight text-slate-900 mb-4">
+                      Diseño que inspira.<br/>
+                      <span className="text-slate-400">Próximamente.</span>
+                    </h3>
+                    <p className="text-slate-500 font-medium max-w-md mx-auto">
+                      Estamos preparando nuestra nueva colección para brindarte lo último en tecnología.
+                    </p>
+                  </div>
+                </Reveal>
+              )}
             </div>
           </section>
         );

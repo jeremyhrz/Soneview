@@ -256,7 +256,7 @@ export default function AdminDashboard() {
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
-                <tr style={{ textAlign: 'left', borderBottom: '1px solid #f0f0f0' }}>
+                <tr style={{ textAlign: 'left', borderBottom: '1px solid #e8e8ed' }}>
                   <th style={{ padding: '16px 8px', color: 'rgba(33,40,68,0.4)', fontWeight: 600 }}>Producto</th>
                   <th style={{ padding: '16px 8px', color: 'rgba(33,40,68,0.4)', fontWeight: 600 }}>Categoría</th>
                   <th style={{ padding: '16px 8px', color: 'rgba(33,40,68,0.4)', fontWeight: 600, textAlign: 'right' }}>Acciones</th>
@@ -264,7 +264,7 @@ export default function AdminDashboard() {
               </thead>
               <tbody>
                 {filteredProducts.map(product => (
-                  <tr key={product.id} style={{ borderBottom: '1px solid #f9f9fb' }}>
+                  <tr key={product.id} style={{ borderBottom: '1px solid #e8e8ed' }}>
                     <td style={{ padding: '16px 8px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                         <img src={product.image_url} alt="" style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover', background: '#f5f5f7' }} />
@@ -272,14 +272,14 @@ export default function AdminDashboard() {
                       </div>
                     </td>
                     <td style={{ padding: '16px 8px' }}>
-                      <span className="px-3 py-1.5 rounded-full border border-slate-200 text-[10px] font-bold tracking-widest uppercase text-slate-500 bg-transparent">
+                      <span className="px-3 py-1.5 rounded-full border border-[#e8e8ed] text-[10px] font-bold tracking-widest uppercase text-slate-500 bg-transparent">
                         {product.category}
                       </span>
                     </td>
                     <td style={{ padding: '16px 8px', textAlign: 'right' }}>
                       <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
-                        <button onClick={() => handleOpenModal(product)} style={{ padding: 8, borderRadius: 8, border: 'none', background: '#f0f7ff', color: '#007aff', cursor: 'pointer' }}><Edit size={18} /></button>
-                        <button onClick={() => handleDelete(product.id)} style={{ padding: 8, borderRadius: 8, border: 'none', background: '#fff0f0', color: '#ff3b30', cursor: 'pointer' }}><Trash2 size={18} /></button>
+                        <button onClick={() => handleOpenModal(product)} className="p-2 rounded-lg transition-colors bg-transparent text-slate-400 hover:text-slate-900 hover:bg-slate-100"><Edit size={18} /></button>
+                        <button onClick={() => handleDelete(product.id)} className="p-2 rounded-lg transition-colors bg-transparent text-slate-400 hover:text-slate-900 hover:bg-slate-100"><Trash2 size={18} /></button>
                       </div>
                     </td>
                   </tr>
@@ -293,7 +293,7 @@ export default function AdminDashboard() {
 
         {activeTab === 'home' && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ background: '#fff', borderRadius: 24, padding: 32, boxShadow: '0 4px 20px rgba(0,0,0,0.03)' }}>
-             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24, borderBottom: '1px solid #e8e8ed', paddingBottom: 16 }}>
                <h2 style={{ fontSize: 22, fontWeight: 700 }}>Configuración del Slider Principal</h2>
              </div>
              
@@ -317,8 +317,8 @@ export default function AdminDashboard() {
                         <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)', display: 'block', marginBottom: 4 }}>URL de Imagen del Producto</label>
                         <input value={slide.image} onChange={e => { const newS = [...homeEditor.heroSlides]; newS[index].image = e.target.value; setHomeEditor({...homeEditor, heroSlides: newS}) }} className={inputClasses} placeholder="https://..." />
                         {slide.image && (
-                          <div style={{ marginTop: 12, borderRadius: 12, overflow: 'hidden', height: 120, background: '#eee', display: 'inline-block' }}>
-                            <img src={slide.image} alt="Preview" style={{ height: '100%', objectFit: 'cover' }} />
+                          <div className="mt-3 overflow-hidden rounded-xl bg-slate-100 border border-[#e8e8ed] inline-flex items-center justify-center h-24 w-auto max-w-[200px]">
+                            <img src={slide.image} alt="Preview" className="h-full w-full object-cover" />
                           </div>
                         )}
                       </div>
@@ -326,7 +326,7 @@ export default function AdminDashboard() {
                 </div>
              ))}
 
-             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 48, marginBottom: 24, borderBottom: '1px solid #eee', paddingBottom: 16 }}>
+             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 48, marginBottom: 24, borderBottom: '1px solid #e8e8ed', paddingBottom: 16 }}>
                <h2 style={{ fontSize: 22, fontWeight: 700 }}>Títulos de Categorías</h2>
              </div>
 
@@ -356,9 +356,7 @@ export default function AdminDashboard() {
 
              <button 
                onClick={saveHomeConfig}
-               style={{ padding: '16px 32px', borderRadius: 12, background: '#2997ff', color: '#fff', fontSize: 16, fontWeight: 700, border: 'none', cursor: 'pointer', marginTop: 24, width: '100%', transition: 'all 0.2s', boxShadow: '0 8px 24px rgba(41, 151, 255, 0.25)' }}
-               onMouseEnter={(e) => e.target.style.transform = 'scale(1.01)'}
-               onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}
+               className="w-full mt-6 py-4 rounded-2xl bg-slate-900 text-white font-bold transition-all duration-300 hover:bg-black hover:-translate-y-1 hover:shadow-xl hover:shadow-black/10"
              >
                Guardar Configuración del Inicio
              </button>
@@ -388,7 +386,14 @@ export default function AdminDashboard() {
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)' }}>URL de la Imagen</label>
-                  <input required value={formData.imagen_url} onChange={(e) => setFormData({...formData, imagen_url: e.target.value})} className={inputClasses} placeholder="https://ejemplo.com/imagen.jpg" />
+                  <div className="flex gap-4">
+                    <input required value={formData.imagen_url} onChange={(e) => setFormData({...formData, imagen_url: e.target.value})} className={`${inputClasses} flex-1`} placeholder="https://ejemplo.com/imagen.jpg" />
+                    {formData.imagen_url && (
+                      <div className="w-16 h-[52px] shrink-0 rounded-xl overflow-hidden bg-slate-50 border border-[#e8e8ed]">
+                        <img src={formData.imagen_url} alt="Preview" className="w-full h-full object-cover" onError={(e) => e.target.style.display = 'none'} onLoad={(e) => e.target.style.display = 'block'} />
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)' }}>Descripción</label>

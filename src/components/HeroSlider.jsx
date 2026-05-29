@@ -7,26 +7,24 @@ import { useProducts } from '../context/ProductContext';
 const INTERVAL_MS = 6000;
 
 const textVariants = {
-  enter: (d) => ({ opacity: 0, x: d > 0 ? 40 : -40 }),
-  center: { opacity: 1, x: 0 },
-  exit: (d) => ({ opacity: 0, x: d > 0 ? -40 : 40 })
+  enter: (d) => ({ opacity: 0, y: 20 }),
+  center: { opacity: 1, y: 0 },
+  exit: (d) => ({ opacity: 0, y: -20 })
 };
 
 const imgVariants = {
-  enter: (d) => ({ opacity: 0, scale: 0.95, filter: 'blur(10px)' }),
-  center: { opacity: 1, scale: 1, filter: 'blur(0px)' },
-  exit: (d) => ({ opacity: 0, scale: 0.95, filter: 'blur(10px)' })
+  enter: (d) => ({ opacity: 0, scale: 0.95, y: 20, filter: 'blur(10px)' }),
+  center: { opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' },
+  exit: (d) => ({ opacity: 0, scale: 0.95, y: -20, filter: 'blur(10px)' })
 };
 
 export default function HeroSlider() {
-  const { products } = useProducts();
+  const { homeConfig } = useProducts();
   const [active, setActive] = useState(0);
   const [direction, setDirection] = useState(1);
 
-  // Mapeamos los primeros 4 productos dinámicos del panel (base de datos)
-  const slides = products && products.length > 0 
-    ? products.slice(0, 4) 
-    : [];
+  // Mapeamos los slides desde la configuración del panel de inicio
+  const slides = homeConfig?.heroSlides?.filter(s => s.title || s.image) || [];
 
   const next = useCallback(() => {
     if(slides.length <= 1) return;
@@ -52,16 +50,28 @@ export default function HeroSlider() {
   }, [next, slides.length]);
 
   if (slides.length === 0) {
-    return <div className="min-h-[85vh] lg:h-screen bg-sv-light w-full" />;
+    return (
+      <section className="min-h-[85vh] lg:h-screen w-full bg-sv-light flex items-center justify-center p-6 pt-24">
+        <div className="w-full max-w-4xl rounded-[2.5rem] bg-gradient-to-b from-[#f5f5f7] to-white border border-black/[0.02] flex flex-col items-center justify-center text-center p-16 md:p-24 shadow-[inset_0_2px_20px_rgba(0,0,0,0.02)]">
+          <h3 className="text-2xl md:text-4xl font-bold tracking-tight text-slate-900 mb-4">
+            Diseño que inspira.<br/>
+            <span className="text-slate-400">Próximamente.</span>
+          </h3>
+          <p className="text-slate-500 font-medium max-w-md mx-auto">
+            Estamos preparando nuestra nueva colección para brindarte lo último en tecnología.
+          </p>
+        </div>
+      </section>
+    );
   }
 
   const slide = slides[active];
   
-  // Separamos el título para destacar la última palabra
-  const titleStr = slide.name || slide.nombre || '';
-  const words = titleStr.split(' ');
-  const titleAccent = words.length > 1 ? words.pop() : '';
-  const titleMain = words.join(' ');
+  // Usamos los campos exactos del formulario del AdminDashboard
+  const titleMain = slide.title || '';
+  const titleAccent = slide.titleAccent || '';
+  const subtitle = slide.subtitle || '';
+  const imageUrl = slide.image || '';
 
   return (
     <section className="relative min-h-[85vh] lg:h-screen w-full bg-sv-light flex flex-col overflow-hidden">
@@ -93,7 +103,7 @@ export default function HeroSlider() {
               className="flex flex-col items-start"
             >
               <p className="text-xs font-bold tracking-[0.2em] uppercase text-[#0071e3] mb-4">
-                {slide.category || slide.categoria || 'Destacado'}
+                Destacado
               </p>
 
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tighter text-slate-900 leading-[1.05] mb-6">
@@ -102,22 +112,22 @@ export default function HeroSlider() {
               </h1>
 
               <p className="text-lg lg:text-xl text-slate-500 font-normal tracking-normal max-w-md mb-10 leading-relaxed line-clamp-3">
-                {slide.description || slide.descripcion}
+                {subtitle}
               </p>
 
               {/* Botones de Acción Minimalistas */}
               <div className="flex flex-wrap items-center gap-6">
                 <Link
-                  to={`/product/${slide.id}`}
+                  to="/catalog"
                   className="bg-sv-blue text-white rounded-full px-8 py-3.5 text-sm font-semibold tracking-wide transition-all duration-500 ease-in-out hover:bg-black hover:scale-[1.02] hover:shadow-xl hover:shadow-sv-blue/20"
                 >
-                  Comprar
+                  Ver Catálogo
                 </Link>
                 <Link
-                  to={`/product/${slide.id}#info`}
+                  to="/catalog"
                   className="group flex items-center gap-2 text-sm font-semibold text-slate-900 transition-all duration-500 ease-in-out hover:text-[#0071e3]"
                 >
-                  Ver detalles 
+                  Explorar todo 
                   <ArrowRight size={16} className="transition-transform duration-500 ease-in-out group-hover:translate-x-1" strokeWidth={2} />
                 </Link>
               </div>
@@ -139,8 +149,8 @@ export default function HeroSlider() {
               <motion.img
                 animate={{ y: [-12, 12, -12] }}
                 transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-                src={slide.image_url || slide.imagen_url}
-                alt={titleStr}
+                src={imageUrl}
+                alt={titleMain}
                 className="w-full max-w-[450px] lg:max-w-[550px] object-contain drop-shadow-2xl"
               />
             </motion.div>
