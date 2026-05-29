@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import logo from '../logo/logo.png';
 
 /**
@@ -49,68 +48,39 @@ const footerLinks = [
 ];
 
 const Footer = () => (
-  <footer style={{
-    background: '#fff',
-    borderTop: '1px solid rgba(33,40,68,0.08)',
-    color: 'rgba(33,40,68,0.6)',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-    fontSize: '12px',
-  }}>
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 32px' }}>
+  <footer className="bg-slate-50 border-t border-slate-200 text-slate-600 font-sans">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       {/* Logo y descripción */}
-      <div style={{ padding: '48px 0', borderBottom: '1px solid rgba(33,40,68,0.08)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 24 }}>
+      <div className="py-12 border-b border-slate-200">
+        <div className="flex items-center gap-4 mb-6">
           <img 
             src={logo} 
             alt="Soneview Logo" 
+            className="h-8 w-auto"
             style={{
-              height: '34px',
-              width: 'auto',
               filter: 'brightness(0.13) sepia(0.2) hue-rotate(180deg)',
             }}
           />
         </div>
-        <p style={{ 
-          fontSize: 14, 
-          lineHeight: 1.6, 
-          color: 'rgba(33,40,68,0.6)',
-          maxWidth: '600px',
-        }}>
+        <p className="max-w-xl text-sm leading-7 text-slate-500">
           Tecnología que redefine el estándar. Productos premium diseñados para ofrecer la mejor experiencia en cada categoría.
         </p>
       </div>
 
       {/* Link columns */}
-      <div style={{ 
-        padding: '48px 0', 
-        borderBottom: '1px solid rgba(33,40,68,0.08)',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: 48,
-      }}>
+      <div className="py-12 border-b border-slate-200 grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-12">
         {footerLinks.map(col => (
           <div key={col.title}>
-            <h4 style={{ 
-              color: '#212844', 
-              fontWeight: 600, 
-              fontSize: 13, 
-              marginBottom: 16,
-              letterSpacing: '-0.02em',
-            }}>
+            <h4 className="text-xs font-semibold uppercase tracking-widest text-slate-900 mb-4">
               {col.title}
             </h4>
-            <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+            <ul className="space-y-2">
               {col.links.map(({ label, to }) => (
-                <li key={label} style={{ marginBottom: 12 }}>
+                <li key={label}>
                   <Link
                     to={to}
-                    style={{
-                      color: 'rgba(33,40,68,0.6)',
-                      textDecoration: 'none',
-                      transition: 'color 0.2s ease',
-                    }}
-                    className="hover:text-[#212844]"
+                    className="text-xs text-slate-500 hover:text-slate-900 transition-colors duration-200"
                   >
                     {label}
                   </Link>
@@ -122,16 +92,12 @@ const Footer = () => (
       </div>
 
       {/* Legal notes */}
-      <div style={{ padding: '32px 0', borderBottom: '1px solid rgba(33,40,68,0.08)' }}>
-        <div style={{ 
-          fontSize: 11, 
-          lineHeight: 1.6, 
-          color: 'rgba(33,40,68,0.4)',
-        }}>
-          <p style={{ marginBottom: 8 }}>
+      <div className="py-8 border-b border-slate-200">
+        <div className="space-y-2 text-[11px] leading-6 text-slate-400">
+          <p>
             1. Las especificaciones pueden variar según el modelo y la región. Consulta con tu distribuidor autorizado.
           </p>
-          <p style={{ marginBottom: 8 }}>
+          <p>
             2. Las imágenes son ilustrativas. Los productos reales pueden presentar ligeras variaciones.
           </p>
           <p>
@@ -141,40 +107,17 @@ const Footer = () => (
       </div>
 
       {/* Bottom bar */}
-      <div style={{ 
-        padding: '32px 0',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 16,
-        '@media (min-width: 768px)': {
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-        }
-      }}>
-        <p style={{ 
-          color: 'rgba(33,40,68,0.4)',
-          fontSize: 11,
-        }}>
+      <div className="py-8 flex flex-col gap-4 md:flex-row md:justify-between md:items-center">
+        <p className="text-[11px] text-slate-400">
           Copyright © 2026 Soneview Inc. Todos los derechos reservados.
         </p>
-        
-        <div style={{ 
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 16,
-        }}>
+
+        <div className="flex flex-wrap gap-5">
           {['Privacidad', 'Términos', 'Aviso legal', 'Mapa del sitio'].map(item => (
             <Link
               key={item}
               to="/"
-              style={{
-                color: 'rgba(33,40,68,0.6)',
-                textDecoration: 'none',
-                fontSize: 11,
-                transition: 'color 0.2s ease',
-              }}
-              className="hover:text-[#212844]"
+              className="text-[11px] text-slate-500 hover:text-slate-900 transition-colors duration-200"
             >
               {item}
             </Link>

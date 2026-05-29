@@ -134,7 +134,7 @@ export default function Home() {
 
       {/* ── BENTO GRID ──────────────────────────────── */}
       <section style={{ padding: '120px 48px', background: '#f0e7d5' }}>
-        <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal style={{ textAlign: 'center', marginBottom: 64 }}>
             <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(33,40,68,0.38)', marginBottom: 14 }}>Destacados</p>
             <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 800, letterSpacing: '-0.04em', color: '#212844', lineHeight: 1, marginBottom: 16 }}>Lo mejor de Soneview.</h2>
@@ -165,7 +165,7 @@ export default function Home() {
         const hasItems = sec.items && sec.items.length > 0;
         return (
           <section key={sec.cat} style={{ padding: '120px 48px', background: sec.bg }}>
-            <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <Reveal style={{ marginBottom: 56 }}>
                 <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#0071e3', marginBottom: 14 }}>{sec.eyebrow}</p>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20 }}>

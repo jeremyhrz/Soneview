@@ -109,72 +109,43 @@ export default function Navbar() {
           left: 0,
           right: 0,
           zIndex: 9999,
-          height: '44px',
+          height: '48px',
           background: scrolled ? 'rgba(33, 40, 68, 0.88)' : '#212844',
-          backdropFilter: 'blur(20px) saturate(180%)',
-          WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
+          WebkitBackdropFilter: scrolled ? 'blur(20px) saturate(180%)' : 'none',
           borderBottom: scrolled ? '1px solid rgba(255, 255, 255, 0.08)' : 'none',
           transition: 'all 0.4s cubic-bezier(0.42, 0, 0.58, 1)',
         }}
       >
-        <div style={{
-          maxWidth: '980px',
-          margin: '0 auto',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 22px',
-        }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center justify-between">
           {/* Logo Soneview - Izquierda */}
           <Link 
             to="/" 
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '12px', 
-              textDecoration: 'none',
-              flexShrink: 0,
-            }}
+            className="flex items-center gap-3 no-underline flex-shrink-0"
           >
             <img 
               src={logo} 
               alt="Soneview Logo" 
+              className="h-9 w-auto"
               style={{
-                height: '34px',
-                width: 'auto',
                 filter: 'brightness(0) invert(1)',
               }}
             />
           </Link>
 
           {/* Navegación Desktop - Centro */}
-          <nav className="hidden lg:flex" style={{
-            gap: 0,
-            alignItems: 'center',
-          }}>
+          <nav className="hidden lg:flex items-center gap-0">
             {NAV_LINKS.map(({ label, to }) => (
               <Link
                 key={to}
                 to={to}
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className={`px-3 h-10 flex items-center text-[13px] font-normal tracking-wide transition-colors duration-300 ${isActive(to) ? 'text-white' : 'text-slate-300 hover:text-white'}`}
                 style={{
-                  padding: '0 10px',
-                  height: '44px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  fontSize: '12px',
-                  fontWeight: 400,
                   textDecoration: 'none',
                   whiteSpace: 'nowrap',
-                  color: isActive(to) ? '#ffffff' : 'rgba(240, 231, 213, 0.7)',
-                  transition: 'color 0.15s ease',
                   fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#ffffff'}
-                onMouseLeave={(e) => {
-                  if (!isActive(to)) e.currentTarget.style.color = 'rgba(240, 231, 213, 0.7)';
                 }}
               >
                 {label}
@@ -183,7 +154,7 @@ export default function Navbar() {
           </nav>
 
           {/* Acciones Derecha - Buscador y Menú */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div className="flex items-center gap-3 lg:gap-4">
             {/* Buscador */}
             <button
               onClick={() => setSearchOpen(!searchOpen)}
@@ -207,20 +178,14 @@ export default function Navbar() {
             {/* Menú Móvil */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
+              className="lg:hidden hover:bg-white/10 rounded-full p-2 transition-all duration-200"
               style={{
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
                 color: '#f0e7d5',
-                display: 'flex',
-                alignItems: 'center',
-                padding: '6px',
-                borderRadius: '50%',
-                transition: 'all 0.2s ease',
-                '@media (min-width: 834px)': { display: 'none' },
               }}
               aria-label="Menú"
-              className="hover:bg-white/10"
             >
               {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
