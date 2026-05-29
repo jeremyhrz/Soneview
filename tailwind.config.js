@@ -7,14 +7,12 @@ export default {
   theme: {
     extend: {
 
-      /* ── Brand Colours ───────────────────────────────── */
+      /* ── Brand Colours (Apple Premium Standard) ──────── */
       colors: {
-        'sv-blue':   '#212844',
-        'sv-cream':  '#f0e7d5',
-        'sv-accent': '#2997ff',   // Apple-blue for CTAs / links
-        'sv-gold':   '#e2a84b',   // Premium badge accent
-        'sv-light':  '#fcfaf7',   // Near-white cream background
-        'sv-dark':   '#0f1120',   // Deepest dark, rich contrast
+        'sv-blue':   '#1d1d1f',   // Apple Matte Gray
+        'sv-accent': '#0071e3',   // Deep Tech Blue
+        'sv-light':  '#f5f5f7',   // Apple Standard Light
+        'sv-dark':   '#000000',   // Pure Black
       },
 
       /* ── Typography ──────────────────────────────────── */

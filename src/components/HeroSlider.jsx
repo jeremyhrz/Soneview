@@ -1,74 +1,86 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { heroSlides } from '../data/mockData';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { useProducts } from '../context/ProductContext';
 
-/**
- * HeroSlider.jsx
- * Full-screen Apple-style hero carousel.
- * Auto-advances every 6 s. Gradient bg transitions per slide.
- */
 const INTERVAL_MS = 6000;
 
 const textVariants = {
-  enter:  (d) => ({ opacity: 0, x: d > 0 ? 50 : -50 }),
+  enter: (d) => ({ opacity: 0, x: d > 0 ? 40 : -40 }),
   center: { opacity: 1, x: 0 },
-  exit:   (d) => ({ opacity: 0, x: d > 0 ? -50 : 50 }),
+  exit: (d) => ({ opacity: 0, x: d > 0 ? -40 : 40 })
 };
 
 const imgVariants = {
-  enter:  (d) => ({ opacity: 0, x: d > 0 ? 80 : -80, scale: 0.96 }),
-  center: { opacity: 1, x: 0, scale: 1 },
-  exit:   (d) => ({ opacity: 0, x: d > 0 ? -80 : 80, scale: 0.96 }),
+  enter: (d) => ({ opacity: 0, scale: 0.95, filter: 'blur(10px)' }),
+  center: { opacity: 1, scale: 1, filter: 'blur(0px)' },
+  exit: (d) => ({ opacity: 0, scale: 0.95, filter: 'blur(10px)' })
 };
 
-const HeroSlider = () => {
-  const [active, setActive]       = useState(0);
+export default function HeroSlider() {
+  const { products } = useProducts();
+  const [active, setActive] = useState(0);
   const [direction, setDirection] = useState(1);
+
+  // Mapeamos los primeros 4 productos dinámicos del panel (base de datos)
+  const slides = products && products.length > 0 
+    ? products.slice(0, 4) 
+    : [];
+
+  const next = useCallback(() => {
+    if(slides.length <= 1) return;
+    setDirection(1);
+    setActive((p) => (p + 1) % slides.length);
+  }, [slides.length]);
+
+  const prev = useCallback(() => {
+    if(slides.length <= 1) return;
+    setDirection(-1);
+    setActive((p) => (p - 1 + slides.length) % slides.length);
+  }, [slides.length]);
 
   const goTo = useCallback((idx) => {
     setDirection(idx > active ? 1 : -1);
     setActive(idx);
   }, [active]);
 
-  const next = useCallback(() => {
-    setDirection(1);
-    setActive(p => (p + 1) % heroSlides.length);
-  }, []);
-
-  const prev = useCallback(() => {
-    setDirection(-1);
-    setActive(p => (p - 1 + heroSlides.length) % heroSlides.length);
-  }, []);
-
   useEffect(() => {
+    if (slides.length <= 1) return;
     const t = setInterval(next, INTERVAL_MS);
     return () => clearInterval(t);
-  }, [next]);
+  }, [next, slides.length]);
 
-  const slide = heroSlides[active];
+  if (slides.length === 0) {
+    return <div className="min-h-[85vh] lg:h-screen bg-sv-light w-full" />;
+  }
+
+  const slide = slides[active];
+  
+  // Separamos el título para destacar la última palabra
+  const titleStr = slide.name || slide.nombre || '';
+  const words = titleStr.split(' ');
+  const titleAccent = words.length > 1 ? words.pop() : '';
+  const titleMain = words.join(' ');
 
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden" aria-label="Hero principal">
+    <section className="relative min-h-[85vh] lg:h-screen w-full bg-sv-light flex flex-col overflow-hidden">
+      
+      {/* Fondo: Glow Sutil Premium */}
+      <div className="absolute inset-0 flex items-center justify-center opacity-30 pointer-events-none">
+        <motion.div 
+          key={`glow-${active}`}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, ease: 'easeOut' }}
+          className="w-[50vw] h-[50vw] bg-[#0071e3] rounded-full blur-[120px]"
+        />
+      </div>
 
-      {/* — Animated gradient background — */}
-      <motion.div
-        key={`bg-${active}`}
-        className="absolute inset-0 -z-10"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.85 }}
-        style={{
-          background: `linear-gradient(155deg, ${slide.bgFrom} 0%, ${slide.bgTo} 55%, #ffffff 100%)`,
-        }}
-      />
-
-      {/* — Main content — */}
-      <div className="flex-1 flex items-center max-w-[1400px] mx-auto w-full px-6 sm:px-10 lg:px-16 pt-24 pb-12">
-        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 w-full items-center">
-
-          {/* Text block */}
+      <div className="flex-1 flex items-center max-w-[1400px] mx-auto w-full px-6 sm:px-12 lg:px-16 z-10 pt-20">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center w-full">
+          
+          {/* Izquierda: Textos Dinámicos */}
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
               key={`text-${active}`}
@@ -77,49 +89,42 @@ const HeroSlider = () => {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
               className="flex flex-col items-start"
             >
-              <p
-                className="text-xs font-bold tracking-[0.2em] uppercase mb-5"
-                style={{ color: slide.accentColor }}
-              >
-                {slide.eyebrow}
+              <p className="text-xs font-bold tracking-[0.2em] uppercase text-[#0071e3] mb-4">
+                {slide.category || slide.categoria || 'Destacado'}
               </p>
 
-              <h1 className="text-[clamp(2.8rem,6.5vw,5.5rem)] font-extrabold tracking-[-0.04em] text-sv-blue leading-[1.02] mb-6">
-                {slide.title}
-                <br />
-                <span style={{ color: slide.accentColor }}>{slide.titleAccent}</span>
+              <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tighter text-slate-900 leading-[1.05] mb-6">
+                {titleMain} <br />
+                <span className="text-[#0071e3]">{titleAccent}</span>
               </h1>
 
-              <p className="text-[clamp(1rem,1.4vw,1.2rem)] text-sv-blue/58 font-medium leading-relaxed max-w-[420px] mb-10">
-                {slide.subtitle}
+              <p className="text-lg lg:text-xl text-slate-500 font-normal tracking-normal max-w-md mb-10 leading-relaxed line-clamp-3">
+                {slide.description || slide.descripcion}
               </p>
 
-              <div className="flex flex-wrap items-center gap-4">
+              {/* Botones de Acción Minimalistas */}
+              <div className="flex flex-wrap items-center gap-6">
                 <Link
-                  to={`/product/${slide.productId}`}
-                  className="inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-sm font-bold text-white transition-all duration-300 hover:opacity-90 hover:shadow-xl active:scale-[0.97]"
-                  style={{
-                    backgroundColor: slide.accentColor,
-                    boxShadow: `0 6px 20px ${slide.accentColor}44`,
-                  }}
+                  to={`/product/${slide.id}`}
+                  className="bg-sv-blue text-white rounded-full px-8 py-3.5 text-sm font-semibold tracking-wide transition-all duration-500 ease-in-out hover:bg-black hover:scale-[1.02] hover:shadow-xl hover:shadow-sv-blue/20"
                 >
-                  {slide.cta}
+                  Comprar
                 </Link>
                 <Link
-                  to={`/product/${slide.productId}`}
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-sv-blue/65 hover:text-sv-blue transition-all group"
+                  to={`/product/${slide.id}#info`}
+                  className="group flex items-center gap-2 text-sm font-semibold text-slate-900 transition-all duration-500 ease-in-out hover:text-[#0071e3]"
                 >
-                  {slide.ctaSecondary}
-                  <span className="text-lg leading-none transition-transform group-hover:translate-x-1">›</span>
+                  Ver detalles 
+                  <ArrowRight size={16} className="transition-transform duration-500 ease-in-out group-hover:translate-x-1" strokeWidth={2} />
                 </Link>
               </div>
             </motion.div>
           </AnimatePresence>
 
-          {/* Product image */}
+          {/* Derecha: Imagen del Producto Flotante */}
           <AnimatePresence mode="wait" custom={direction}>
             <motion.div
               key={`img-${active}`}
@@ -128,50 +133,38 @@ const HeroSlider = () => {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-              className="flex items-center justify-center"
+              transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+              className="flex justify-center items-center"
             >
-              <motion.div
-                animate={{ y: [0, -14, 0] }}
-                transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-                className="relative w-full max-w-[520px]"
-              >
-                <img
-                  src={slide.image}
-                  alt={slide.title}
-                  className="w-full object-cover rounded-[2rem] shadow-[0_32px_80px_rgba(0,0,0,0.18)]"
-                  style={{ aspectRatio: '4/3' }}
-                  loading="eager"
-                />
-                {/* Color glow overlay */}
-                <div
-                  className="absolute inset-0 rounded-[2rem] pointer-events-none"
-                  style={{
-                    background: `radial-gradient(ellipse at top center, ${slide.accentColor}20 0%, transparent 65%)`,
-                  }}
-                />
-              </motion.div>
+              <motion.img
+                animate={{ y: [-12, 12, -12] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+                src={slide.image_url || slide.imagen_url}
+                alt={titleStr}
+                className="w-full max-w-[450px] lg:max-w-[550px] object-contain drop-shadow-2xl"
+              />
             </motion.div>
           </AnimatePresence>
+
         </div>
       </div>
 
-      {/* — Bottom controls bar — */}
-      <div className="flex items-center justify-between max-w-[1400px] mx-auto w-full px-6 sm:px-10 lg:px-16 pb-10">
-
-        {/* Progress dots */}
-        <div className="flex items-center gap-3">
-          {heroSlides.map((_, i) => (
+      {/* Controles Inferiores */}
+      <div className="w-full max-w-[1400px] mx-auto px-6 sm:px-12 lg:px-16 pb-12 z-10 flex items-center justify-between">
+        
+        {/* Indicadores */}
+        <div className="flex items-center gap-2.5">
+          {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => goTo(i)}
               aria-label={`Slide ${i + 1}`}
-              className="relative h-1.5 rounded-full overflow-hidden transition-all duration-300 bg-sv-blue/15"
-              style={{ width: i === active ? 28 : 6 }}
+              className="relative h-1.5 rounded-full overflow-hidden transition-all duration-500 ease-in-out bg-slate-200"
+              style={{ width: i === active ? 32 : 8 }}
             >
               {i === active && (
                 <motion.div
-                  className="absolute inset-0 rounded-full bg-sv-blue"
+                  className="absolute inset-0 bg-slate-900"
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ duration: INTERVAL_MS / 1000, ease: 'linear' }}
@@ -182,26 +175,24 @@ const HeroSlider = () => {
           ))}
         </div>
 
-        {/* Prev / Next */}
-        <div className="flex items-center gap-2">
-          <button
+        {/* Flechas Nav */}
+        <div className="flex gap-3">
+          <button 
             onClick={prev}
             aria-label="Anterior"
-            className="w-9 h-9 rounded-full bg-white/70 backdrop-blur-sm border border-sv-blue/12 flex items-center justify-center text-sv-blue/50 hover:text-sv-blue hover:border-sv-blue/25 transition-all"
+            className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:border-slate-300 hover:bg-white transition-all duration-500 ease-in-out"
           >
-            <ChevronLeft size={15} />
+            <ChevronLeft size={18} />
           </button>
-          <button
+          <button 
             onClick={next}
             aria-label="Siguiente"
-            className="w-9 h-9 rounded-full bg-white/70 backdrop-blur-sm border border-sv-blue/12 flex items-center justify-center text-sv-blue/50 hover:text-sv-blue hover:border-sv-blue/25 transition-all"
+            className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 hover:border-slate-300 hover:bg-white transition-all duration-500 ease-in-out"
           >
-            <ChevronRight size={15} />
+            <ChevronRight size={18} />
           </button>
         </div>
       </div>
     </section>
   );
-};
-
-export default HeroSlider;
+}

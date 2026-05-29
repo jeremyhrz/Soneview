@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { heroSlides } from '../data/mockData';
 import { useProducts } from '../context/ProductContext';
 import Navbar from '../components/Navbar';
+import HeroSlider from '../components/HeroSlider';
 import Footer from '../components/Footer';
 
 /**
@@ -17,138 +18,45 @@ import Footer from '../components/Footer';
  * • export default garantizado
  */
 
-/* ─── HERO SLIDER ──────────────────────────────────── */
-const INTERVAL = 6000;
-
-function HeroSlider() {
-  const { homeConfig } = useProducts();
-  const heroSlides = homeConfig.heroSlides;
-  const [idx, setIdx] = useState(0);
-  const [dir, setDir] = useState(1);
-  const slide = heroSlides[idx] || heroSlides[0];
-
-  const next = useCallback(() => { setDir(1); setIdx(p => (p + 1) % heroSlides.length); }, []);
-  const prev = useCallback(() => { setDir(-1); setIdx(p => (p - 1 + heroSlides.length) % heroSlides.length); }, []);
-  const goTo = useCallback((i) => { setDir(i > idx ? 1 : -1); setIdx(i); }, [idx]);
-
-  useEffect(() => { const t = setInterval(next, INTERVAL); return () => clearInterval(t); }, [next]);
-
-  const variants = {
-    enter: (d) => ({ opacity: 0, x: d > 0 ? 50 : -50 }),
-    center: { opacity: 1, x: 0 },
-    exit: (d) => ({ opacity: 0, x: d > 0 ? -50 : 50 }),
-  };
-
-  return (
-    <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      {/* BG gradient */}
-      <motion.div
-        key={`bg-${idx}`}
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}
-        style={{ position: 'absolute', inset: 0, zIndex: -1, background: `linear-gradient(155deg, ${slide.bgFrom} 0%, ${slide.bgTo} 55%, #fff 100%)` }}
-      />
-
-      {/* Content */}
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', maxWidth: 1400, margin: '0 auto', width: '100%', padding: '100px 48px 40px', gap: 48 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48, width: '100%', alignItems: 'center' }}>
-
-          {/* Text */}
-          <AnimatePresence mode="wait" custom={dir}>
-            <motion.div key={`t-${idx}`} custom={dir} variants={variants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}>
-              <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.18em', textTransform: 'uppercase', color: slide.accentColor, marginBottom: 20 }}>
-                {slide.eyebrow}
-              </p>
-              <h1 style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)', fontWeight: 800, letterSpacing: '-0.04em', color: '#212844', lineHeight: 1.02, marginBottom: 24 }}>
-                {slide.title}<br />
-                <span style={{ color: slide.accentColor }}>{slide.titleAccent}</span>
-              </h1>
-              <p style={{ fontSize: 'clamp(0.95rem, 1.4vw, 1.15rem)', fontWeight: 500, color: 'rgba(33,40,68,0.55)', lineHeight: 1.6, maxWidth: 400, marginBottom: 36 }}>
-                {slide.subtitle}
-              </p>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap' }}>
-                <Link to={`/product/${slide.productId}`} style={{
-                  display: 'inline-flex', alignItems: 'center', padding: '12px 28px', borderRadius: 99,
-                  background: slide.accentColor, color: '#fff', fontSize: 14, fontWeight: 700, textDecoration: 'none',
-                  boxShadow: `0 6px 20px ${slide.accentColor}44`,
-                }}>
-                  {slide.cta}
-                </Link>
-                <Link to={`/product/${slide.productId}#specs`} style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontSize: 14, fontWeight: 600, color: 'rgba(33,40,68,0.6)', textDecoration: 'none' }}>
-                  {slide.ctaSecondary} <span style={{ fontSize: 17 }}>→</span>
-                </Link>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Image */}
-          <AnimatePresence mode="wait" custom={dir}>
-            <motion.div key={`i-${idx}`} custom={dir} variants={variants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} style={{ display: 'flex', justifyContent: 'center' }}>
-              <motion.div animate={{ y: [0, -14, 0] }} transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }} style={{ maxWidth: 500, width: '100%' }}>
-                <img src={slide.image} alt={slide.title} style={{ width: '100%', aspectRatio: '4/3', objectFit: 'cover', borderRadius: 28, boxShadow: '0 32px 72px rgba(0,0,0,0.16)' }} loading="eager" />
-              </motion.div>
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </div>
-
-      {/* Controls */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', maxWidth: 1400, margin: '0 auto', width: '100%', padding: '0 48px 40px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          {heroSlides.map((_, i) => (
-            <button key={i} onClick={() => goTo(i)} aria-label={`Slide ${i + 1}`} style={{
-              height: 5, borderRadius: 99, border: 'none', cursor: 'pointer', transition: 'all 0.3s',
-              width: i === idx ? 28 : 6, background: i === idx ? '#212844' : 'rgba(33,40,68,0.18)',
-              overflow: 'hidden', position: 'relative', padding: 0,
-            }}>
-              {i === idx && (
-                <motion.div initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ duration: INTERVAL / 1000, ease: 'linear' }}
-                  style={{ position: 'absolute', inset: 0, background: '#212844', borderRadius: 99, transformOrigin: 'left' }} />
-              )}
-            </button>
-          ))}
-        </div>
-        <div style={{ display: 'flex', gap: 8 }}>
-          {[{ fn: prev, icon: <ChevronLeft size={15} /> }, { fn: next, icon: <ChevronRight size={15} /> }].map((btn, i) => (
-            <button key={i} onClick={btn.fn} style={{
-              width: 36, height: 36, borderRadius: '50%', border: '1px solid rgba(33,40,68,0.12)',
-              background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(8px)', cursor: 'pointer',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(33,40,68,0.5)',
-            }}>
-              {btn.icon}
-            </button>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ─── FEATURED CARD ────────────────────────────────── */
 function FeaturedCard({ product, featured = false, delay = 0 }) {
   if (!product) return null;
   return (
     <motion.div
-      initial={{ opacity: 0, y: 32 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
-      transition={{ duration: 0.72, delay, ease: [0.16, 1, 0.3, 1] }}
-      whileHover={{ y: -6 }}
-      style={{
-        background: '#fff', borderRadius: 28, overflow: 'hidden',
-        boxShadow: '0 1px 4px rgba(0,0,0,0.03), 0 12px 40px rgba(0,0,0,0.05)',
-        border: '1px solid rgba(0,0,0,0.035)', gridColumn: featured ? 'span 2' : undefined,
-      }}
+      transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
+      className={`group relative flex flex-col overflow-hidden rounded-[2.5rem] bg-[#f5f5f7] transition-all duration-700 ease-in-out hover:-translate-y-2 hover:shadow-[0_24px_48px_rgba(0,0,0,0.06)] hover:bg-white cursor-pointer ${featured ? 'md:col-span-2' : ''}`}
+      style={{ gridColumn: featured ? 'span 2' : undefined }}
     >
-      <div style={{ aspectRatio: featured ? '16/9' : '4/3', overflow: 'hidden', background: '#f5f5f7' }}>
-        <img src={product.image_url || product.imagen_url} alt={product.name || product.nombre} style={{ width: '100%', height: '100%', objectFit: 'cover' }} loading="lazy" />
+      {/* Contenedor Imagen (Efecto Zoom Sutil) */}
+      <div className={`relative flex items-center justify-center p-8 mix-blend-multiply ${featured ? 'aspect-[16/9]' : 'aspect-[4/3]'}`}>
+        <img 
+          src={product.image_url || product.imagen_url} 
+          alt={product.name || product.nombre} 
+          className="w-full h-full object-contain transition-transform duration-700 ease-in-out group-hover:scale-[1.03]" 
+          loading="lazy" 
+        />
       </div>
-      <div style={{ padding: 28 }}>
-        <p style={{ fontSize: 10, fontWeight: 800, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#2997ff', marginBottom: 8 }}>{product.category || product.categoria}</p>
-        <h3 style={{ fontSize: featured ? 26 : 20, fontWeight: 800, letterSpacing: '-0.03em', color: '#212844', marginBottom: 10, lineHeight: 1.2 }}>{product.name || product.nombre}</h3>
-        <p style={{ fontSize: 13, color: 'rgba(33,40,68,0.50)', lineHeight: 1.55, marginBottom: 20 }}>{product.description || product.descripcion}</p>
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-          <Link to={`/product/${product.id}`} style={{ padding: '10px 22px', borderRadius: 99, background: '#2997ff', color: '#fff', fontSize: 13, fontWeight: 700, textDecoration: 'none' }}>Ver detalles</Link>
-          <Link to={`/product/${product.id}#info`} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 13, fontWeight: 600, color: '#2997ff', textDecoration: 'none' }}>Más información <span style={{ fontSize: 16 }}>→</span></Link>
+
+      {/* Textos y Botón Minimalista */}
+      <div className="flex flex-col flex-1 px-10 pb-10">
+        <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-slate-400 mb-3 transition-colors duration-500 group-hover:text-[#0071e3]">
+          {product.category || product.categoria}
+        </p>
+        <h3 className={`font-bold tracking-tight text-slate-900 transition-colors duration-500 mb-6 ${featured ? 'text-3xl' : 'text-xl'}`}>
+          {product.name || product.nombre}
+        </h3>
+        
+        <div className="mt-auto pt-2">
+          <Link 
+            to={`/product/${product.id}`} 
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-slate-900 text-white text-sm font-semibold transition-all duration-500 ease-in-out hover:bg-[#0071e3] hover:shadow-lg hover:shadow-[#0071e3]/30"
+          >
+            Ver detalles
+            <ArrowRight size={15} />
+          </Link>
         </div>
       </div>
     </motion.div>
@@ -223,27 +131,30 @@ export default function Home() {
       </section>
 
       {/* ── CATEGORY SECTIONS ───────────────────────── */}
-      {sections.map((sec) => (
-        <section key={sec.cat} style={{ padding: '120px 48px', background: sec.bg }}>
-          <div style={{ maxWidth: 1400, margin: '0 auto' }}>
-            <Reveal style={{ marginBottom: 56 }}>
-              <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#2997ff', marginBottom: 14 }}>{sec.eyebrow}</p>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20 }}>
-                <div>
-                  <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 800, letterSpacing: '-0.035em', color: '#212844', lineHeight: 1.05, marginBottom: 12 }}>{sec.title}</h2>
-                  <p style={{ fontSize: 16, fontWeight: 500, color: 'rgba(33,40,68,0.50)', maxWidth: 380 }}>{sec.body}</p>
+      {sections.map((sec) => {
+        if (!sec.items || sec.items.length === 0) return null;
+        return (
+          <section key={sec.cat} style={{ padding: '120px 48px', background: sec.bg }}>
+            <div style={{ maxWidth: 1400, margin: '0 auto' }}>
+              <Reveal style={{ marginBottom: 56 }}>
+                <p style={{ fontSize: 11, fontWeight: 800, letterSpacing: '0.18em', textTransform: 'uppercase', color: '#0071e3', marginBottom: 14 }}>{sec.eyebrow}</p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: 20 }}>
+                  <div>
+                    <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', fontWeight: 800, letterSpacing: '-0.035em', color: '#1d1d1f', lineHeight: 1.05, marginBottom: 12 }}>{sec.title}</h2>
+                    <p style={{ fontSize: 16, fontWeight: 500, color: '#86868b', maxWidth: 380 }}>{sec.body}</p>
+                  </div>
+                  <Link to={`/catalog?cat=${sec.cat}`} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 14, fontWeight: 600, color: '#0071e3', textDecoration: 'none' }} className="hover:opacity-80 transition-opacity">
+                    Ver todos <span style={{ fontSize: 16 }}>→</span>
+                  </Link>
                 </div>
-                <Link to={`/catalog?cat=${sec.cat}`} style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 14, fontWeight: 600, color: '#2997ff', textDecoration: 'none' }}>
-                  Ver todos <span style={{ fontSize: 16 }}>→</span>
-                </Link>
+              </Reveal>
+              <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fill, minmax(320px, 1fr))`, gap: 32 }}>
+                {sec.items.map((p, i) => <FeaturedCard key={p.id} product={p} delay={i * 0.08} />)}
               </div>
-            </Reveal>
-            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(sec.items.length, 3)}, 1fr)`, gap: 20 }}>
-              {sec.items.map((p, i) => <FeaturedCard key={p.id} product={p} delay={i * 0.08} />)}
             </div>
-          </div>
-        </section>
-      ))}
+          </section>
+        );
+      })}
 
       {/* ── BRAND STRIP ─────────────────────────────── */}
       <section style={{ padding: '80px 48px', background: '#212844' }}>

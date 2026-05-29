@@ -160,15 +160,7 @@ export default function AdminDashboard() {
               placeholder="Contraseña" 
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              style={{
-                padding: '16px',
-                borderRadius: '16px',
-                border: loginError ? '2px solid #ff3b30' : '1px solid rgba(0,0,0,0.1)',
-                fontSize: '16px',
-                outline: 'none',
-                background: '#f5f5f7',
-                transition: 'all 0.3s ease'
-              }}
+              className={`w-full px-5 py-4 rounded-2xl border text-[16px] transition-all duration-300 outline-none focus:bg-white focus:ring-4 placeholder:text-slate-400 ${loginError ? 'border-red-500 bg-red-50/30 focus:ring-red-100' : 'bg-slate-50 border-slate-200 focus:ring-slate-100 focus:border-slate-300'}`}
               autoFocus
             />
             {loginError && (
@@ -211,12 +203,12 @@ export default function AdminDashboard() {
             <h1 style={{ fontSize: 32, fontWeight: 700, color: '#212844', marginBottom: 8 }}>Panel de Administración</h1>
             <p style={{ color: 'rgba(33,40,68,0.5)' }}>Gestiona tu tienda premium</p>
           </div>
-          <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-            <div style={{ background: '#e3e3e8', padding: 4, borderRadius: 14, display: 'flex', marginRight: 12 }}>
-               <button onClick={() => setActiveTab('catalog')} style={{ padding: '8px 16px', borderRadius: 10, border: 'none', background: activeTab === 'catalog' ? '#fff' : 'transparent', fontWeight: 600, color: activeTab === 'catalog' ? '#212844' : '#666', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, boxShadow: activeTab === 'catalog' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none', transition: 'all 0.2s' }}>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1 bg-slate-100 p-1.5 rounded-2xl mr-4">
+               <button onClick={() => setActiveTab('catalog')} className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${activeTab === 'catalog' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}>
                  <ShoppingBag size={16}/> Catálogo
                </button>
-               <button onClick={() => setActiveTab('home')} style={{ padding: '8px 16px', borderRadius: 10, border: 'none', background: activeTab === 'home' ? '#fff' : 'transparent', fontWeight: 600, color: activeTab === 'home' ? '#212844' : '#666', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, boxShadow: activeTab === 'home' ? '0 2px 8px rgba(0,0,0,0.05)' : 'none', transition: 'all 0.2s' }}>
+               <button onClick={() => setActiveTab('home')} className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-300 ${activeTab === 'home' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-800 hover:bg-slate-200/50'}`}>
                  <LayoutTemplate size={16}/> Inicio
                </button>
             </div>
@@ -224,20 +216,14 @@ export default function AdminDashboard() {
             {activeTab === 'catalog' && (
               <button 
                 onClick={() => handleOpenModal()}
-                style={{ 
-                  display: 'flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 12, 
-                  background: '#212844', color: '#fff', border: 'none', cursor: 'pointer', fontWeight: 600 
-                }}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:bg-black hover:shadow-md transition-all duration-300"
               >
                 <Plus size={18} /> Nuevo Producto
               </button>
             )}
             <button 
               onClick={handleLogout}
-              style={{ 
-                display: 'flex', alignItems: 'center', gap: 8, padding: '12px 24px', borderRadius: 12, 
-                background: 'rgba(255, 59, 48, 0.1)', color: '#ff3b30', border: 'none', cursor: 'pointer', fontWeight: 600 
-              }}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-slate-100 text-slate-600 text-sm font-semibold hover:bg-slate-200 hover:text-slate-900 transition-all duration-300"
             >
               <LogOut size={18} /> Salir
             </button>
@@ -286,7 +272,7 @@ export default function AdminDashboard() {
                       </div>
                     </td>
                     <td style={{ padding: '16px 8px' }}>
-                      <span style={{ padding: '4px 12px', borderRadius: 99, background: '#f0f0f0', fontSize: 12, color: '#666' }}>
+                      <span className="px-3 py-1.5 rounded-full border border-slate-200 text-[10px] font-bold tracking-widest uppercase text-slate-500 bg-transparent">
                         {product.category}
                       </span>
                     </td>
@@ -317,19 +303,19 @@ export default function AdminDashboard() {
                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
                       <div>
                         <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)', display: 'block', marginBottom: 4 }}>Título Principal</label>
-                        <input value={slide.title} onChange={e => { const newS = [...homeEditor.heroSlides]; newS[index].title = e.target.value; setHomeEditor({...homeEditor, heroSlides: newS}) }} style={{...inputStyle, width: '100%'}} />
+                        <input value={slide.title} onChange={e => { const newS = [...homeEditor.heroSlides]; newS[index].title = e.target.value; setHomeEditor({...homeEditor, heroSlides: newS}) }} className={inputClasses} />
                       </div>
                       <div>
                         <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)', display: 'block', marginBottom: 4 }}>Título Destacado (Color)</label>
-                        <input value={slide.titleAccent} onChange={e => { const newS = [...homeEditor.heroSlides]; newS[index].titleAccent = e.target.value; setHomeEditor({...homeEditor, heroSlides: newS}) }} style={{...inputStyle, width: '100%'}} />
+                        <input value={slide.titleAccent} onChange={e => { const newS = [...homeEditor.heroSlides]; newS[index].titleAccent = e.target.value; setHomeEditor({...homeEditor, heroSlides: newS}) }} className={inputClasses} />
                       </div>
                       <div style={{ gridColumn: '1 / -1' }}>
                         <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)', display: 'block', marginBottom: 4 }}>Subtítulo</label>
-                        <input value={slide.subtitle} onChange={e => { const newS = [...homeEditor.heroSlides]; newS[index].subtitle = e.target.value; setHomeEditor({...homeEditor, heroSlides: newS}) }} style={{...inputStyle, width: '100%'}} />
+                        <input value={slide.subtitle} onChange={e => { const newS = [...homeEditor.heroSlides]; newS[index].subtitle = e.target.value; setHomeEditor({...homeEditor, heroSlides: newS}) }} className={inputClasses} />
                       </div>
                       <div style={{ gridColumn: '1 / -1' }}>
                         <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)', display: 'block', marginBottom: 4 }}>URL de Imagen del Producto</label>
-                        <input value={slide.image} onChange={e => { const newS = [...homeEditor.heroSlides]; newS[index].image = e.target.value; setHomeEditor({...homeEditor, heroSlides: newS}) }} style={{...inputStyle, width: '100%'}} placeholder="https://..." />
+                        <input value={slide.image} onChange={e => { const newS = [...homeEditor.heroSlides]; newS[index].image = e.target.value; setHomeEditor({...homeEditor, heroSlides: newS}) }} className={inputClasses} placeholder="https://..." />
                         {slide.image && (
                           <div style={{ marginTop: 12, borderRadius: 12, overflow: 'hidden', height: 120, background: '#eee', display: 'inline-block' }}>
                             <img src={slide.image} alt="Preview" style={{ height: '100%', objectFit: 'cover' }} />
@@ -347,22 +333,22 @@ export default function AdminDashboard() {
              {homeEditor.sections?.map((sec, index) => (
                 <div key={index} style={{ marginBottom: 24, padding: 24, background: '#f9f9fb', borderRadius: 16 }}>
                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-                     <span style={{ background: '#2997ff', color: '#fff', fontSize: 11, fontWeight: 800, padding: '4px 10px', borderRadius: 99, textTransform: 'uppercase' }}>
+                     <span className="px-3 py-1.5 rounded-full border border-slate-200 text-[10px] font-bold tracking-widest uppercase text-slate-500 bg-transparent">
                        {sec.cat}
                      </span>
                    </div>
                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: 16 }}>
                       <div>
                         <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)', display: 'block', marginBottom: 4 }}>Etiqueta (Tagline)</label>
-                        <input value={sec.eyebrow} onChange={e => { const newS = [...homeEditor.sections]; newS[index].eyebrow = e.target.value; setHomeEditor({...homeEditor, sections: newS}) }} style={{...inputStyle, width: '100%'}} placeholder="Ej: Smart TVs" />
+                        <input value={sec.eyebrow} onChange={e => { const newS = [...homeEditor.sections]; newS[index].eyebrow = e.target.value; setHomeEditor({...homeEditor, sections: newS}) }} className={inputClasses} placeholder="Ej: Smart TVs" />
                       </div>
                       <div>
                         <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)', display: 'block', marginBottom: 4 }}>Título Principal</label>
-                        <input value={sec.title} onChange={e => { const newS = [...homeEditor.sections]; newS[index].title = e.target.value; setHomeEditor({...homeEditor, sections: newS}) }} style={{...inputStyle, width: '100%'}} placeholder="Ej: Una nueva visión." />
+                        <input value={sec.title} onChange={e => { const newS = [...homeEditor.sections]; newS[index].title = e.target.value; setHomeEditor({...homeEditor, sections: newS}) }} className={inputClasses} placeholder="Ej: Una nueva visión." />
                       </div>
                       <div>
                         <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)', display: 'block', marginBottom: 4 }}>Descripción Corta</label>
-                        <input value={sec.body} onChange={e => { const newS = [...homeEditor.sections]; newS[index].body = e.target.value; setHomeEditor({...homeEditor, sections: newS}) }} style={{...inputStyle, width: '100%'}} />
+                        <input value={sec.body} onChange={e => { const newS = [...homeEditor.sections]; newS[index].body = e.target.value; setHomeEditor({...homeEditor, sections: newS}) }} className={inputClasses} />
                       </div>
                    </div>
                 </div>
@@ -392,25 +378,25 @@ export default function AdminDashboard() {
               <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)' }}>Nombre del Producto</label>
-                  <input required value={formData.nombre} onChange={(e) => setFormData({...formData, nombre: e.target.value})} style={inputStyle} placeholder="Ej: Smart TV 55 pulg 4K QLED" />
+                  <input required value={formData.nombre} onChange={(e) => setFormData({...formData, nombre: e.target.value})} className={inputClasses} placeholder="Ej: Smart TV 55 pulg 4K QLED" />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)' }}>Categoría</label>
-                  <select value={formData.categoria} onChange={(e) => setFormData({...formData, categoria: e.target.value})} style={inputStyle}>
+                  <select value={formData.categoria} onChange={(e) => setFormData({...formData, categoria: e.target.value})} className={inputClasses}>
                     {categories.map(cat => <option key={cat.id} value={cat.id}>{cat.label}</option>)}
                   </select>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)' }}>URL de la Imagen</label>
-                  <input required value={formData.imagen_url} onChange={(e) => setFormData({...formData, imagen_url: e.target.value})} style={inputStyle} placeholder="https://ejemplo.com/imagen.jpg" />
+                  <input required value={formData.imagen_url} onChange={(e) => setFormData({...formData, imagen_url: e.target.value})} className={inputClasses} placeholder="https://ejemplo.com/imagen.jpg" />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)' }}>Descripción</label>
-                  <textarea required value={formData.descripcion} onChange={(e) => setFormData({...formData, descripcion: e.target.value})} style={{ ...inputStyle, minHeight: 80, resize: 'vertical' }} placeholder="Descripción del producto..." />
+                  <textarea required value={formData.descripcion} onChange={(e) => setFormData({...formData, descripcion: e.target.value})} className={`${inputClasses} min-h-[80px] resize-y`} placeholder="Descripción del producto..." />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                   <label style={{ fontSize: 13, fontWeight: 600, color: 'rgba(33,40,68,0.5)' }}>Especificaciones Técnicas</label>
-                  <textarea value={formData.especificaciones} onChange={(e) => setFormData({...formData, especificaciones: e.target.value})} style={{ ...inputStyle, minHeight: 120, resize: 'vertical' }} placeholder="Separadas por comas..." />
+                  <textarea value={formData.especificaciones} onChange={(e) => setFormData({...formData, especificaciones: e.target.value})} className={`${inputClasses} min-h-[120px] resize-y`} placeholder="Separadas por comas..." />
                 </div>
                 <button disabled={isSubmitting} type="submit" style={{ marginTop: 12, padding: '16px', borderRadius: 16, background: '#212844', color: '#fff', fontSize: 16, fontWeight: 700, border: 'none', cursor: isSubmitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
                   {isSubmitting ? <Loader2 className="animate-spin" size={20} /> : currentProduct ? 'Actualizar Producto' : 'Subir Producto'}
@@ -436,12 +422,5 @@ function StatCard({ icon, label, value }) {
   );
 }
 
-const inputStyle = {
-  padding: '14px 16px',
-  borderRadius: 12,
-  border: '1px solid rgba(33,40,68,0.1)',
-  fontSize: 15,
-  outline: 'none',
-  background: '#f9f9fb',
-  fontFamily: 'inherit'
-};
+const inputClasses = "w-full px-4 py-3.5 rounded-2xl bg-slate-50/50 border border-slate-200 text-slate-900 text-[15px] transition-all duration-300 outline-none focus:bg-white focus:ring-4 focus:ring-slate-100 focus:border-slate-300 placeholder:text-slate-400";
+const inputStyle = {};
