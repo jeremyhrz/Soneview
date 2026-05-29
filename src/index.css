@@ -118,7 +118,7 @@
   }
 
   .cat-pill.active {
-    @apply bg-sv-blue text-sv-cream border-sv-blue shadow-sm;
+    @apply bg-sv-blue text-sv-light border-sv-blue shadow-sm;
   }
 
   .cat-pill:not(.active) {
