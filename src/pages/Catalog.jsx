@@ -7,8 +7,21 @@ import {
   ChevronLeft, ChevronRight, ChevronRight as ArrowRight,
   Loader,
 } from 'lucide-react';
-import { categories } from '../data/mockData';
-import { productService } from '../lib/supabaseClient';
+import { supabase } from '../lib/supabaseClient';
+
+const categories = [
+  { id: 'all', label: 'Todos', icon: 'LayoutGrid' },
+  { id: 'Televisores', label: 'Televisores', icon: 'Tv' },
+  { id: 'Computación', label: 'Computación', icon: 'Laptop' },
+  { id: 'Neveras', label: 'Neveras', icon: 'Refrigerator' },
+  { id: 'A/C', label: 'A/C', icon: 'Wind' },
+  { id: 'Cocina', label: 'Cocina', icon: 'ChefHat' },
+  { id: 'Congeladores', label: 'Congeladores', icon: 'Snowflake' },
+  { id: 'Audio', label: 'Audio', icon: 'Speaker' },
+  { id: 'Lavadoras', label: 'Lavadoras', icon: 'WashingMachine' },
+  { id: 'Electrodomésticos', label: 'Electrodomésticos', icon: 'LayoutGrid' },
+  { id: 'Oferta', label: 'Oferta', icon: 'LayoutGrid' }
+];
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -16,11 +29,13 @@ const ICON = { LayoutGrid, Tv, Laptop, Wind, Refrigerator, Speaker, ChefHat, Was
 const ease = [0.16, 1, 0.3, 1];
 
 const ProductCard = ({ product, index }) => {
-  // Mapeo al esquema real (English)
   const id = product.id;
   const nombre = product.name;
-  const descripcion = product.description;
-  const imagen = product.image_url;
+  const imagen = product.image_url || product.image;
+  const priceValue = product.price ?? product.price_formatted ?? product.price_display ?? product.priceValue;
+  const precio = typeof priceValue === 'number'
+    ? new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(priceValue)
+    : priceValue || '';
 
   return (
     <motion.article
@@ -29,48 +44,50 @@ const ProductCard = ({ product, index }) => {
       viewport={{ once: true, margin: '-100px' }}
       transition={{ duration: 1.2, delay: Math.min(index * 0.1, 0.6), ease }}
       style={{
-        background: 'transparent',
+        background: '#ffffff',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         textAlign: 'center',
-        padding: '0 0 48px',
-        filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.01)) drop-shadow(0 8px 32px rgba(0,0,0,0.04))',
+        padding: '28px 24px 32px',
+        borderRadius: '28px',
+        border: '1px solid rgba(15,23,42,0.08)',
+        boxShadow: '0 18px 38px rgba(15,23,42,0.08)',
+        minHeight: '100%',
+        overflow: 'hidden',
       }}
     >
       <Link to={`/product/${id}`} style={{ display: 'block', width: '100%', textDecoration: 'none' }}>
         <motion.div
-          whileHover={{ scale: 1.03 }}
-          transition={{ duration: 0.6, ease: [0.42, 0, 0.58, 1] }}
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.5, ease: [0.42, 0, 0.58, 1] }}
           style={{
             width: '100%',
             aspectRatio: '1/1',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            marginBottom: '40px',
+            marginBottom: '32px',
             overflow: 'hidden',
-            borderRadius: '2.5rem',
-            position: 'relative'
+            borderRadius: '28px',
+            position: 'relative',
           }}
         >
           <div style={{
             position: 'absolute',
             inset: 0,
-            background: '#f9f9fb',
-            borderRadius: '2.5rem',
+            background: '#f8fafc',
+            borderRadius: '28px',
           }} />
-          
+
           <img
             src={imagen}
             alt={nombre}
             style={{
-              width: '90%',
-              height: '90%',
+              width: '92%',
+              height: '92%',
               objectFit: 'contain',
               display: 'block',
-              filter: 'brightness(1.02) contrast(1.05) saturate(1.1)',
-              mixBlendMode: 'multiply',
               position: 'relative',
               zIndex: 1,
             }}
@@ -79,49 +96,48 @@ const ProductCard = ({ product, index }) => {
         </motion.div>
       </Link>
 
-      <Link to={`/product/${id}`} style={{ textDecoration: 'none' }}>
-        <motion.h3
-          style={{
-            fontSize: '1.75rem',
+      <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
+        <Link to={`/product/${id}`} style={{ textDecoration: 'none', width: '100%' }}>
+          <motion.h3
+            style={{
+              fontSize: '1.4rem',
+              fontWeight: 700,
+              color: '#111827',
+              lineHeight: 1.15,
+              marginBottom: 0,
+              fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
+            }}
+          >
+            {nombre}
+          </motion.h3>
+        </Link>
+
+        {precio ? (
+          <p style={{
+            fontSize: '1rem',
             fontWeight: 700,
-            letterSpacing: '-0.05em',
-            color: '#212844',
-            lineHeight: 1.1,
-            marginBottom: '16px',
-            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif',
-          }}
-        >
-          {nombre}
-        </motion.h3>
-      </Link>
+            color: '#111827',
+            margin: 0,
+            letterSpacing: '-0.02em',
+          }}>
+            {precio}
+          </p>
+        ) : null}
+      </div>
 
-      <motion.p
-        style={{
-          fontSize: '15px',
-          fontWeight: 400,
-          color: 'rgba(33,40,68,0.6)',
-          lineHeight: 1.6,
-          maxWidth: '300px',
-          marginBottom: '32px',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif',
-        }}
-      >
-        {descripcion}
-      </motion.p>
-
-      <motion.div style={{ display: 'flex', alignItems: 'center', gap: '24px', justifyContent: 'center' }}>
-        <Link 
-          to={`/product/${id}`} 
+      <motion.div style={{ display: 'flex', width: '100%', justifyContent: 'center', marginTop: 'auto' }}>
+        <Link
+          to={`/product/${id}`}
           style={{
-            padding: '12px 28px',
-            borderRadius: '99px',
-            background: '#212844',
-            color: '#f0e7d5',
+            padding: '12px 26px',
+            borderRadius: '999px',
+            background: '#111827',
+            color: '#f8fafc',
             fontSize: '14px',
             fontWeight: 600,
             textDecoration: 'none',
             fontFamily: 'inherit',
-            transition: 'all 0.3s ease',
+            transition: 'all 0.24s ease',
           }}
         >
           Ver detalles
@@ -142,17 +158,19 @@ export default function Catalog() {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        let data;
+        let query = supabase.from('products').select('*').order('created_at', { ascending: false });
+
         if (searchTerm.trim()) {
-          data = await productService.searchProducts(searchTerm);
+          query = query.ilike('name', `%${searchTerm}%`);
         } else if (activeCat !== 'all') {
-          data = await productService.getProductsByCategory(activeCat);
-        } else {
-          data = await productService.getAllProducts();
+          query = query.eq('category', activeCat);
         }
+
+        const { data, error } = await query;
+        if (error) throw error;
         setProducts(data || []);
       } catch (err) {
-        console.error('Error:', err);
+        console.error('Error fetching catalog:', err);
       } finally {
         setLoading(false);
       }
@@ -213,7 +231,7 @@ export default function Catalog() {
             <p style={{ marginTop: '20px', color: 'rgba(33,40,68,0.5)' }}>Cargando catálogo premium...</p>
           </div>
         ) : displayed.length > 0 ? (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '64px 32px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '40px 32px', alignItems: 'stretch' }}>
             {displayed.map((product, i) => <ProductCard key={product.id || i} product={product} index={i} />)}
           </div>
         ) : (

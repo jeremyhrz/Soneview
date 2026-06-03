@@ -1,7 +1,6 @@
 import React from 'react';
-import { Link }                    from 'react-router-dom';
-import { motion }                  from 'framer-motion';
-import { categories }              from '../data/mockData';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 /**
  * ProductCard.jsx — Lujo Extremo Apple Style
@@ -19,29 +18,11 @@ import { categories }              from '../data/mockData';
  * El "container" es transparente — la tarjeta ES el producto.
  */
 
-const ACCENT = {
-  tv:        '#0ea5e9',
-  computing: '#8b5cf6',
-  air:       '#10b981',
-  fridge:    '#06b6d4',
-  audio:     '#ec4899',
-  kitchen:   '#f59e0b',
-  washer:    '#6366f1',
-  freezer:   '#3b82f6',
-};
-
-const BADGE_STYLE = {
-  'Flagship':    { color: '#0ea5e9', bg: 'rgba(14, 165, 233, 0.08)' },
-  'Elite':       { color: '#f59e0b', bg: 'rgba(245, 158, 11, 0.08)' },
-  'Best Seller': { color: '#10b981', bg: 'rgba(16, 185, 129, 0.08)' },
-  'Nuevo':       { color: '#0ea5e9', bg: 'rgba(14, 165, 233, 0.08)' },
-  'Eficiente':   { color: '#10b981', bg: 'rgba(16, 185, 129, 0.08)' },
-};
-
 export default function ProductCard({ product, index = 0, large = false }) {
-  const accent   = ACCENT[product.category] || '#2997ff';
-  const badge    = BADGE_STYLE[product.badge] || null;
-  const catLabel = categories.find(c => c.id === product.category)?.label || product.category;
+  const priceValue = product.price ?? product.price_formatted ?? product.price_display ?? '';
+  const precio = typeof priceValue === 'number'
+    ? new Intl.NumberFormat('es-CL', { style: 'currency', currency: 'CLP', maximumFractionDigits: 0 }).format(priceValue)
+    : priceValue;
 
   return (
     <motion.article
@@ -55,15 +36,18 @@ export default function ProductCard({ product, index = 0, large = false }) {
       }}
       className="group"
       style={{
-        /* ─── Producto flotante con sombra sutil ─── */
-        background:   'transparent',
+        background:   '#ffffff',
         display:      'flex',
         flexDirection: 'column',
         alignItems:   'center',
         textAlign:    'center',
         cursor:       'pointer',
-        padding:      large ? '0 0 32px' : '0 0 24px',
-        filter:       'drop-shadow(0 2px 4px rgba(0,0,0,0.01)) drop-shadow(0 8px 32px rgba(0,0,0,0.04))',
+        padding:      '28px 24px 32px',
+        borderRadius: '28px',
+        border:       '1px solid rgba(15,23,42,0.08)',
+        boxShadow:    '0 18px 38px rgba(15,23,42,0.08)',
+        minHeight:    '100%',
+        overflow:     'hidden',
       }}
     >
       {/* ── Product image — anti-gravity effect ── */}
@@ -113,41 +97,17 @@ export default function ProductCard({ product, index = 0, large = false }) {
         </motion.div>
       </Link>
 
-      {/* ── Badge — minimalista Apple style ── */}
-      {badge && (
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          style={{
-            fontSize:      10,
-            fontWeight:    700,
-            letterSpacing: '0.08em',
-            textTransform: 'uppercase',
-            color:         badge.color,
-            background:    badge.bg,
-            padding:       '4px 12px',
-            borderRadius:  '99px',
-            marginBottom:  12,
-            fontFamily:    'inherit',
-          }}
-        >
-          {product.badge}
-        </motion.p>
-      )}
-
-      {/* ── Product name — masivo con tracking-tighter ── */}
-      <Link to={`/product/${product.id}`} className="no-underline">
+      <Link to={`/product/${product.id}`} className="no-underline" style={{ width: '100%' }}>
         <motion.h3
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
           style={{
-            fontSize:      large ? '2rem' : '1.5rem',
+            fontSize:      large ? '1.8rem' : '1.4rem',
             fontWeight:    700,
-            letterSpacing: '-0.05em',
-            color:         '#212844',
-            lineHeight:    1.1,
+            letterSpacing: '-0.04em',
+            color:         '#111827',
+            lineHeight:    1.15,
             marginBottom:  12,
             fontFamily:    'inherit',
           }}
@@ -157,65 +117,45 @@ export default function ProductCard({ product, index = 0, large = false }) {
         </motion.h3>
       </Link>
 
-      {/* ── Short description — gris sutil Apple ── */}
-      <motion.p
-        initial={{ opacity: 0, y: 8 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
-        style={{
-          fontSize:      large ? 15 : 14,
-          fontWeight:    400,
-          color:         'rgba(33,40,68,0.6)',
-          lineHeight:    1.6,
-          maxWidth:      280,
-          marginBottom:  large ? 24 : 20,
-          fontFamily:    'inherit',
-        }}
-        className="tracking-tight"
-      >
-        {product.shortDesc}
-      </motion.p>
+      {precio ? (
+        <motion.p
+          initial={{ opacity: 0, y: 8 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          style={{
+            fontSize:      15,
+            fontWeight:    700,
+            color:         '#111827',
+            lineHeight:    1.4,
+            marginBottom:  large ? 28 : 24,
+            fontFamily:    'inherit',
+          }}
+        >
+          {precio}
+        </motion.p>
+      ) : null}
 
-      {/* ── CTAs — cápsula refinada Apple ── */}
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.5 }}
-        style={{ display: 'flex', alignItems: 'center', gap: 16, flexWrap: 'wrap', justifyContent: 'center' }}
+        style={{ display: 'flex', justifyContent: 'center', width: '100%', marginTop: 'auto' }}
       >
         <Link to={`/product/${product.id}`} style={{
-          padding:        '10px 24px',
-          borderRadius:   '99px',
-          background:     '#212844',
-          color:          '#f0e7d5',
+          padding:        '12px 26px',
+          borderRadius:   '999px',
+          background:     '#111827',
+          color:          '#f8fafc',
           fontSize:       14,
           fontWeight:     600,
           textDecoration: 'none',
           fontFamily:     'inherit',
-          whiteSpace:     'nowrap',
-          border:         '1px solid rgba(33,40,68,0.1)',
           transition:     'all 0.3s ease',
+          border:         '1px solid rgba(17,24,39,0.1)',
         }}
-        className="hover:bg-[#1a1f36] hover:scale-105"
+        className="hover:bg-[#0f172a] hover:scale-105"
         >
-          Comprar
-        </Link>
-        <Link to={`/product/${product.id}`} style={{
-          fontSize:       14,
-          fontWeight:     500,
-          color:          '#212844',
-          textDecoration: 'none',
-          fontFamily:     'inherit',
-          display:        'flex',
-          alignItems:     'center',
-          gap:            4,
-          whiteSpace:     'nowrap',
-          opacity:        0.8,
-          transition:     'all 0.3s ease',
-        }}
-        className="hover:opacity-100 hover:gap-6"
-        >
-          Más información <span style={{ fontSize: 16, transition: 'all 0.3s ease' }} className="group-hover:translate-x-1">›</span>
+          Ver detalles
         </Link>
       </motion.div>
     </motion.article>

@@ -15,11 +15,12 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const { getProductById, loading } = useProducts();
   const [product, setProduct] = useState(null);
-
+  const [selectedImage, setSelectedImage] = useState(null);
   useEffect(() => {
     if (!loading) {
       const found = getProductById(id);
       setProduct(found);
+      if (found) setSelectedImage(found.image_url);
     }
   }, [id, getProductById, loading]);
 
@@ -47,6 +48,12 @@ export default function ProductDetail() {
   // Manejo de specs en formato JSONB
   const specsList = product.specs?.list || [];
 
+  // Recopilar todas las imágenes
+  const allImages = [imagen];
+  if (Array.isArray(product.images) && product.images.length > 0) {
+    allImages.push(...product.images);
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#ffffff', color: '#1d1d1f' }}>
       <Navbar />
@@ -61,25 +68,57 @@ export default function ProductDetail() {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: 60, alignItems: 'start' }}>
           
-          <motion.div 
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            style={{ 
-              background: '#f5f5f7', 
-              borderRadius: 32, 
-              padding: 40, 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              aspectRatio: '1/1'
-            }}
-          >
-            <img 
-              src={imagen} 
-              alt={nombre} 
-              style={{ width: '100%', height: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.1))' }} 
-            />
-          </motion.div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              key={selectedImage}
+              style={{ 
+                background: '#f5f5f7', 
+                borderRadius: 32, 
+                padding: 40, 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                aspectRatio: '1/1',
+                overflow: 'hidden'
+              }}
+            >
+              <motion.img 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.3 }}
+                src={selectedImage || imagen} 
+                alt={nombre} 
+                style={{ width: '100%', height: '100%', objectFit: 'contain', filter: 'drop-shadow(0 20px 40px rgba(0,0,0,0.1))' }} 
+              />
+            </motion.div>
+
+            {/* Miniaturas */}
+            {allImages.length > 1 && (
+              <div style={{ display: 'flex', gap: 12, overflowX: 'auto', paddingBottom: 8, scrollbarWidth: 'none' }}>
+                {allImages.map((imgUrl, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => setSelectedImage(imgUrl)}
+                    style={{
+                      width: 80,
+                      height: 80,
+                      borderRadius: 16,
+                      background: '#f5f5f7',
+                      padding: 8,
+                      cursor: 'pointer',
+                      border: selectedImage === imgUrl ? '2px solid #212844' : '2px solid transparent',
+                      transition: 'all 0.2s ease',
+                      flexShrink: 0
+                    }}
+                  >
+                    <img src={imgUrl} alt={`${nombre} thumbnail ${idx}`} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           <motion.div
             initial={{ opacity: 0, x: 20 }}

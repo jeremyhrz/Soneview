@@ -1,84 +1,77 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Credenciales Oficiales de Soneview
-const supabaseUrl = 'https://nqpexejimgxysfqculen.supabase.co';
-const supabaseAnonKey = 'sb_publishable_OH-jsBnUda5QC9w8zWekFg_xF5lxOUT';
+// 1. LECTURA DIRECTA DE VARIABLES
+// Usamos el string exacto para que el bundler de Vite pueda reemplazarlo en tiempo de compilación.
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// 2. LOGS DE DIAGNÓSTICO (Como solicitaste, para ver en F12)
+console.log("=== DIAGNÓSTICO DE SUPABASE ===");
+console.log("URL Detectada:", supabaseUrl);
+console.log("KEY Detectada:", supabaseAnonKey ? "Existe (OK)" : "Vacía (Undefined)");
+console.log("===============================");
 
-/**
- * Servicio de Productos Sincronizado con el Esquema Real
- * Tabla: 'products'
- * Columnas: id, name, description, image_url, category, specs, created_at
- */
+// Si falta alguna variable, usamos un fallback dummy solo para que no tire error de "URL is required" al hacer import
+const safeUrl = supabaseUrl || 'https://placeholder.supabase.co';
+const safeKey = supabaseAnonKey || 'placeholder_key';
+
+// 3. EXPORTACIÓN LIMPIA DEL CLIENTE
+export const supabase = createClient(safeUrl, safeKey);
+
+// 4. MANTENEMOS EL CRUD AISLADO POR SI SE USA EN OTROS COMPONENTES
 export const productService = {
   async getAllProducts() {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return data;
+    try {
+      if (safeUrl === 'https://placeholder.supabase.co') return [];
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        console.error('Error supabase.getAllProducts:', error);
+        return [];
+      }
+      return data || [];
+    } catch (e) {
+      console.error("Fetch Exception en getAllProducts:", e);
+      return []; 
+    }
   },
 
-  async getProductsByCategory(category) {
+  async createProduct(productData) {
+    if (safeUrl === 'https://placeholder.supabase.co') throw new Error("Sin conexión a base de datos real (URL es placeholder)");
+    
     const { data, error } = await supabase
       .from('products')
-      .select('*')
-      .eq('category', category)
-      .order('created_at', { ascending: false });
-
+      .insert([{
+        name: productData.name,
+        description: productData.description || null,
+        image_url: productData.image_url,
+        category: productData.category,
+        price: productData.price,
+        specs: productData.specs
+      }])
+      .select()
+      .single();
+    
     if (error) throw error;
     return data;
-  },
-
-  async searchProducts(term) {
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .or(`name.ilike.%${term}%,description.ilike.%${term}%,category.ilike.%${term}%`)
-      .order('created_at', { ascending: false });
-
-    if (error) throw error;
-    return data;
-  },
-
-  async addProduct(product) {
-    // Mapeo al esquema real de la base de datos
-    const dbProduct = {
-      name: product.nombre,
-      description: product.descripcion,
-      image_url: product.imagen_url,
-      category: product.categoria,
-      specs: product.especificaciones ? { list: product.especificaciones.split(/[,\n]/).map(s => s.trim()).filter(Boolean) } : {}
-    };
-
-    const { data, error } = await supabase
-      .from('products')
-      .insert([dbProduct])
-      .select();
-
-    if (error) throw error;
-    return data && data.length > 0 ? data[0] : null;
   },
 
   async updateProduct(id, updates) {
-    const dbUpdates = {};
-    if (updates.nombre) dbUpdates.name = updates.nombre;
-    if (updates.descripcion) dbUpdates.description = updates.descripcion;
-    if (updates.imagen_url) dbUpdates.image_url = updates.imagen_url;
-    if (updates.categoria) dbUpdates.category = updates.categoria;
-    if (updates.especificaciones) dbUpdates.specs = { list: updates.especificaciones.split(/[,\n]/).map(s => s.trim()).filter(Boolean) };
-
     const { data, error } = await supabase
       .from('products')
-      .update(dbUpdates)
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
       .eq('id', id)
-      .select();
-
+      .select()
+      .single();
+    
     if (error) throw error;
-    return data && data.length > 0 ? data[0] : null;
+    return data;
   },
 
   async deleteProduct(id) {
@@ -86,7 +79,7 @@ export const productService = {
       .from('products')
       .delete()
       .eq('id', id);
-
+    
     if (error) throw error;
     return true;
   }

@@ -10,39 +10,39 @@ const footerLinks = [
   {
     title: 'Productos',
     links: [
-      { label: 'Smart TVs',         to: '/catalog?cat=tv' },
-      { label: 'Computación',       to: '/catalog?cat=computing' },
-      { label: 'A/C Inverter',      to: '/catalog?cat=air' },
-      { label: 'Audio Premium',     to: '/catalog?cat=audio' },
-      { label: 'Línea Blanca',      to: '/catalog?cat=fridge' },
-      { label: 'Cocina',            to: '/catalog?cat=kitchen' },
+      { label: 'Smart TVs', to: '/catalog?cat=tv' },
+      { label: 'Computación', to: '/catalog?cat=computing' },
+      { label: 'A/C Inverter', to: '/catalog?cat=air' },
+      { label: 'Audio Premium', to: '/catalog?cat=audio' },
+      { label: 'Línea Blanca', to: '/catalog?cat=fridge' },
+      { label: 'Cocina', to: '/catalog?cat=kitchen' },
     ],
   },
   {
     title: 'Servicios',
     links: [
-      { label: 'Soporte Técnico',   to: '/' },
-      { label: 'Garantía',          to: '/' },
-      { label: 'Manuales',          to: '/' },
-      { label: 'Actualizaciones',   to: '/' },
+      { label: 'Soporte Técnico', to: '/' },
+      { label: 'Garantía', to: '/' },
+      { label: 'Manuales', to: '/' },
+      { label: 'Actualizaciones', to: '/' },
     ],
   },
   {
     title: 'Distribuidores',
     links: [
-      { label: 'Encuentra uno',     to: '/' },
-      { label: 'Corporativo',       to: '/' },
-      { label: 'Mayoristas',        to: '/' },
-      { label: 'Internacional',     to: '/' },
+      { label: 'Encuentra uno', to: '/' },
+      { label: 'Corporativo', to: '/' },
+      { label: 'Mayoristas', to: '/' },
+      { label: 'Internacional', to: '/' },
     ],
   },
   {
     title: 'Soneview',
     links: [
-      { label: 'Nuestra Historia',  to: '/' },
-      { label: 'Sustentabilidad',   to: '/' },
-      { label: 'Empleos',           to: '/' },
-      { label: 'Contacto',          to: '/' },
+      { label: 'Nuestra Historia', to: '/' },
+      { label: 'Sustentabilidad', to: '/' },
+      { label: 'Empleos', to: '/' },
+      { label: 'Contacto', to: '/' },
     ],
   },
 ];
@@ -54,9 +54,9 @@ const Footer = () => (
       {/* Logo y descripción */}
       <div className="py-12 border-b border-slate-200">
         <div className="flex items-center gap-4 mb-6">
-          <img 
-            src={logo} 
-            alt="Soneview Logo" 
+          <img
+            src={logo}
+            alt="Soneview Logo"
             className="h-8 w-auto"
             style={{
               filter: 'brightness(0.13) sepia(0.2) hue-rotate(180deg)',
